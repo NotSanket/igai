@@ -3,15 +3,61 @@ import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
 import { DistrictProjectsChart, FundingSectorChart, ProposalDistributionChart } from "@/components/dashboard-charts";
-import { MetricCard, SectionHeader } from "@/components/dashboard-ui";
+import { DashboardCard, MetricCard, SectionHeader } from "@/components/dashboard-ui";
 import { ProposalTable } from "@/components/proposal-table";
-import { corporateMetrics, corporateProposals } from "@/lib/data/dashboard";
 import { requireRole } from "@/lib/auth/session";
+import type { ProposalRow } from "@/lib/data/dashboard";
+import { formatCurrency, normalizeProposal } from "@/lib/proposals/format";
+import { createClient } from "@/lib/supabase/server";
+import type { Proposal } from "@/types/database";
 
 const metricIcons = [WalletCards, FileStack, IndianRupee, UsersRound];
+const demoBudget = 10_000_000;
+const sectorColors = ["#0f766e", "#0284c7", "#4f46e5", "#b45309", "#15803d", "#7c3aed", "#be123c", "#475569"];
 
 export default async function CorporateDashboardPage() {
   const { profile } = await requireRole("corporate");
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("proposals")
+    .select("*")
+    .in("status", ["submitted", "under_review"])
+    .order("updated_at", { ascending: false });
+  const proposals = ((data ?? []) as Proposal[]).map(normalizeProposal);
+  const totalRequested = proposals.reduce((total, proposal) => total + proposal.requested_amount, 0);
+  const totalBeneficiaries = proposals.reduce((total, proposal) => total + proposal.beneficiaries, 0);
+  const sectorTotals = proposals.reduce<Record<string, { amount: number; proposals: number }>>((totals, proposal) => {
+    const current = totals[proposal.sector] ?? { amount: 0, proposals: 0 };
+    totals[proposal.sector] = { amount: current.amount + proposal.requested_amount, proposals: current.proposals + 1 };
+    return totals;
+  }, {});
+  const sectorEntries = Object.entries(sectorTotals).sort(([, a], [, b]) => b.amount - a.amount);
+  const fundingBySector = sectorEntries.map(([name, values], index) => ({
+    name,
+    value: totalRequested ? Math.round((values.amount / totalRequested) * 1000) / 10 : 0,
+    color: sectorColors[index % sectorColors.length],
+  }));
+  const proposalDistribution = sectorEntries.map(([name, values]) => ({ name, proposals: values.proposals }));
+  const districtProjects = Object.entries(proposals.reduce<Record<string, number>>((totals, proposal) => {
+    totals[proposal.district] = (totals[proposal.district] ?? 0) + 1;
+    return totals;
+  }, {})).sort(([, a], [, b]) => b - a).slice(0, 8).map(([name, projects]) => ({ name, projects }));
+  const corporateMetrics = [
+    { label: "Available budget", value: "₹1.00 Cr", context: "Demo CSR allocation target", trend: "Ready to allocate" },
+    { label: "Active proposals", value: proposals.length.toLocaleString("en-IN"), context: `Across ${sectorEntries.length} priority sectors`, trend: `${proposals.filter(({ status }) => status === "under_review").length} under review` },
+    { label: "Total requested", value: formatCurrency(totalRequested), context: `${(totalRequested / demoBudget).toFixed(2)}× available capital`, trend: "Requires prioritization" },
+    { label: "Potential beneficiaries", value: totalBeneficiaries.toLocaleString("en-IN"), context: "Estimated direct reach", trend: `${new Set(proposals.map(({ district }) => district)).size} districts represented` },
+  ];
+  const corporateProposals: ProposalRow[] = proposals.slice(0, 6).map((proposal) => ({
+    project: proposal.title,
+    ngo: proposal.ngo_name,
+    sector: proposal.sector,
+    district: proposal.district,
+    requested: formatCurrency(proposal.requested_amount),
+    beneficiaries: proposal.beneficiaries.toLocaleString("en-IN"),
+    status: proposal.status,
+    updated: new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }).format(new Date(proposal.updated_at)),
+  }));
 
   return (
     <AppShell profile={profile} role="corporate" pageTitle="Corporate Overview">
@@ -35,12 +81,14 @@ export default async function CorporateDashboardPage() {
           {corporateMetrics.map((metric, index) => <MetricCard key={metric.label} {...metric} index={index} icon={metricIcons[index]} />)}
         </section>
 
+        {error ? <DashboardCard className="mt-6 border-rose-200 p-5"><p className="font-bold text-rose-800">Proposal data could not be loaded</p><p className="mt-1 text-sm text-rose-600">Refresh the page in a moment. No records have been changed.</p></DashboardCard> : null}
+
         <section id="portfolio-analytics" className="mt-10 scroll-mt-28">
-          <SectionHeader eyebrow="Portfolio intelligence" title="Visual Analytics" action={<p className="hidden text-xs text-slate-500 sm:block">Demo data · Phase 2</p>} />
+          <SectionHeader eyebrow="Portfolio intelligence" title="Visual Analytics" action={<p className="hidden text-xs text-slate-500 sm:block">Live Supabase pipeline</p>} />
           <div className="grid gap-5 xl:grid-cols-2">
-            <FundingSectorChart />
-            <ProposalDistributionChart />
-            <div className="xl:col-span-2"><DistrictProjectsChart /></div>
+            <FundingSectorChart data={fundingBySector} />
+            <ProposalDistributionChart data={proposalDistribution} />
+            <div className="xl:col-span-2"><DistrictProjectsChart data={districtProjects} /></div>
           </div>
         </section>
 
