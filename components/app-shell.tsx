@@ -152,7 +152,7 @@ export function AppShell({ profile, role, pageTitle, children }: AppShellProps) 
           </div>
           <div className="ml-auto flex items-center gap-2 sm:gap-4">
             <div className="hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800 sm:flex">
-              <span className="size-1.5 rounded-full bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,.14)]" /> System ready
+              <span className="size-1.5 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_0_3px_rgba(16,185,129,.14)]" /> System ready
             </div>
             <button aria-label="Notifications" className="relative rounded-xl border border-slate-200 bg-white p-2.5 text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:text-slate-950">
               <Bell className="size-4" /><span className="absolute right-2 top-2 size-1.5 rounded-full bg-amber-500" />

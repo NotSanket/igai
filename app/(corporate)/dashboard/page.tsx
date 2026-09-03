@@ -70,7 +70,7 @@ export default async function CorporateDashboardPage() {
             <h1 className="text-3xl font-bold tracking-[-0.04em] sm:text-4xl lg:text-[44px]">Good evening, CSR Team.</h1>
             <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300 sm:text-base">Turn your CSR budget into a measurable, balanced portfolio of impact.</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="#portfolio-analytics" className="group inline-flex items-center gap-2 rounded-xl bg-emerald-300 px-5 py-3 text-xs font-extrabold tracking-[0.08em] text-emerald-950 transition duration-200 hover:-translate-y-0.5 hover:bg-emerald-200 active:translate-y-0">OPTIMIZE ₹1 CRORE <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" /></Link>
+              <Link href="/optimizer" className="group inline-flex items-center gap-2 rounded-xl bg-emerald-300 px-5 py-3 text-xs font-extrabold tracking-[0.08em] text-emerald-950 transition duration-200 hover:-translate-y-0.5 hover:bg-emerald-200 active:translate-y-0">OPTIMIZE ₹1 CRORE <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" /></Link>
               <Link href="#recent-proposals" className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-xs font-bold tracking-[0.08em] text-white transition hover:-translate-y-0.5 hover:bg-white/10">VIEW PROPOSALS</Link>
             </div>
           </div>
