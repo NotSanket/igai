@@ -1,0 +1,53 @@
+"use client";
+
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+
+import { DashboardCard } from "@/components/dashboard-ui";
+import { districtProjects, proposalDistribution, sectorFunding } from "@/lib/data/dashboard";
+
+const tooltipStyle = { border: "1px solid #e2e8f0", borderRadius: "12px", boxShadow: "0 14px 30px rgba(15,23,42,.1)", fontSize: "12px" };
+
+export function FundingSectorChart() {
+  return (
+    <DashboardCard className="p-5 sm:p-6">
+      <ChartTitle title="Funding by Sector" subtitle="Recommended allocation mix" />
+      <div className="mt-4 grid items-center gap-2 sm:grid-cols-[1fr_0.9fr]">
+        <div className="h-64 min-w-0"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={sectorFunding} dataKey="value" nameKey="name" innerRadius={62} outerRadius={92} paddingAngle={2} stroke="transparent">{sectorFunding.map((item) => <Cell key={item.name} fill={item.color} />)}</Pie><Tooltip contentStyle={tooltipStyle} formatter={(value) => [`${value}%`, "Allocation"]} /></PieChart></ResponsiveContainer></div>
+        <div className="grid grid-cols-2 gap-x-3 gap-y-3 sm:grid-cols-1">{sectorFunding.map((item) => <div key={item.name} className="flex items-center gap-2 text-[11px] text-slate-600"><span className="size-2 rounded-full" style={{ background: item.color }} /><span className="min-w-0 flex-1 truncate">{item.name}</span><span className="font-bold text-slate-800">{item.value}%</span></div>)}</div>
+      </div>
+    </DashboardCard>
+  );
+}
+
+export function ProposalDistributionChart() {
+  return (
+    <DashboardCard className="p-5 sm:p-6">
+      <ChartTitle title="Proposal Distribution" subtitle="Pipeline across priority sectors" />
+      <div className="mt-8 h-64 min-w-0"><ResponsiveContainer width="100%" height="100%"><BarChart data={proposalDistribution} margin={{ left: -20, right: 4 }}><CartesianGrid vertical={false} stroke="#e8eceb" strokeDasharray="3 4" /><XAxis dataKey="name" tick={{ fill: "#64748b", fontSize: 10 }} axisLine={false} tickLine={false} interval={0} angle={-24} textAnchor="end" height={58} /><YAxis allowDecimals={false} tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={false} tickLine={false} /><Tooltip cursor={{ fill: "#f1f5f4" }} contentStyle={tooltipStyle} /><Bar dataKey="proposals" fill="#0f766e" radius={[5, 5, 0, 0]} maxBarSize={30} /></BarChart></ResponsiveContainer></div>
+    </DashboardCard>
+  );
+}
+
+export function DistrictProjectsChart() {
+  return (
+    <DashboardCard className="p-5 sm:p-6">
+      <ChartTitle title="Projects by District" subtitle="Top geographic concentration" />
+      <div className="mt-6 h-[286px] min-w-0"><ResponsiveContainer width="100%" height="100%"><BarChart data={districtProjects} layout="vertical" margin={{ left: 18, right: 20 }}><CartesianGrid horizontal={false} stroke="#e8eceb" strokeDasharray="3 4" /><XAxis type="number" allowDecimals={false} tick={{ fill: "#94a3b8", fontSize: 10 }} axisLine={false} tickLine={false} /><YAxis type="category" dataKey="name" width={92} tick={{ fill: "#475569", fontSize: 11 }} axisLine={false} tickLine={false} /><Tooltip cursor={{ fill: "#f1f5f4" }} contentStyle={tooltipStyle} /><Bar dataKey="projects" fill="#0891b2" radius={[0, 6, 6, 0]} maxBarSize={22} /></BarChart></ResponsiveContainer></div>
+    </DashboardCard>
+  );
+}
+
+function ChartTitle({ title, subtitle }: { title: string; subtitle: string }) {
+  return <div><div className="flex items-center gap-2"><span className="size-1.5 rounded-full bg-emerald-500" /><h3 className="font-bold text-slate-950">{title}</h3></div><p className="mt-1 pl-3.5 text-xs text-slate-500">{subtitle}</p></div>;
+}

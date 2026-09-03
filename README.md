@@ -2,7 +2,7 @@
 
 Impact-Driven, Geographical Equity, Allocation & Intelligence.
 
-This repository currently contains the Phase 0 foundation: a Next.js application with TypeScript, Tailwind CSS, and browser/server Supabase client utilities.
+This repository contains the Next.js foundation plus the Phase 1 Supabase authentication, database schema, Row Level Security policies, and role-protected starter areas.
 
 ## Local setup
 
@@ -11,4 +11,4 @@ This repository currently contains the Phase 0 foundation: a Next.js application
 3. Install dependencies with `npm install`.
 4. Start the application with `npm run dev`.
 
-No authentication, database schema, proposal workflow, optimizer, or other later-phase functionality is included yet.
+Run `supabase/schema.sql` once in the Supabase SQL Editor before testing signup. Proposal workflows, the optimizer, maps, and other later-phase functionality are not included yet.

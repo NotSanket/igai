@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="flex min-h-screen items-center justify-center px-6 py-16">
@@ -18,6 +20,20 @@ export default function Home() {
         <p className="mt-10 text-base font-medium text-slate-900 sm:text-lg">
           Every rupee. The right project. Greater impact.
         </p>
+        <div className="mt-10 flex justify-center gap-3">
+          <Link
+            href="/login"
+            className="rounded-lg bg-emerald-700 px-5 py-3 font-semibold text-white hover:bg-emerald-800"
+          >
+            Sign in
+          </Link>
+          <Link
+            href="/signup"
+            className="rounded-lg border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-800 hover:bg-slate-100"
+          >
+            Create account
+          </Link>
+        </div>
       </section>
     </main>
   );

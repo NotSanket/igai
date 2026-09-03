@@ -19,5 +19,54 @@ body {
     radial-gradient(circle at top, rgb(209 250 229 / 45%), transparent 38rem),
     var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+.dashboard-grid {
+  background-image:
+    linear-gradient(rgb(15 118 110 / 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(15 118 110 / 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 82% 8%, rgb(16 185 129 / 0.07), transparent 23rem);
+  background-size: 32px 32px, 32px 32px, auto;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-rise {
+  animation: rise-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+::selection {
+  background: rgb(167 243 208);
+  color: rgb(6 78 59);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
