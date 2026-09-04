@@ -91,7 +91,15 @@ export function optimizePortfolio(proposals: Proposal[], budget: number, strateg
 
   const selectedIds = new Set(best.selected.map(({ proposal }) => proposal.id));
   const selectedProjects = best.selected.map((project) => ({ ...project, explanation: explainSelectedProject(project) }));
-  const deferredProjects = projectScores.filter(({ proposal }) => !selectedIds.has(proposal.id)).map((project) => ({ ...project, explanation: explainDeferredProject(project, budget - best.spent) }));
+  const deferredExplanationContext = {
+    budget,
+    remainingBudget: budget - best.spent,
+    strategy,
+    equityGuardrail,
+    selectedProjects: best.selected,
+    portfolioScore: best.portfolioScore,
+  };
+  const deferredProjects = projectScores.filter(({ proposal }) => !selectedIds.has(proposal.id)).map((project) => ({ ...project, explanation: explainDeferredProject(project, deferredExplanationContext) }));
   const explanations = Object.fromEntries([...selectedProjects, ...deferredProjects].map(({ proposal, explanation }) => [proposal.id, explanation]));
   const result: PortfolioResult = {
     selectedProjects,
