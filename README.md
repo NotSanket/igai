@@ -7,6 +7,11 @@ IGAI is a decision-grade CSR allocation platform for companies evaluating compet
 
 The current prototype is deterministic and explainable: identical proposals, budget, strategy, and equity settings produce identical results.
 
+## PREVIEW
+<img width="1899" height="864" alt="image" src="https://github.com/user-attachments/assets/a1599496-c169-4eac-8965-edd2a4dc3ce5" />
+
+<img width="1898" height="861" alt="image" src="https://github.com/user-attachments/assets/3c72bfa7-d2bd-46ca-8c09-f2b52ca6bc28" />
+
 ## Why IGAI?
 
 CSR allocation is a portfolio problem—not simply a ranking problem.
